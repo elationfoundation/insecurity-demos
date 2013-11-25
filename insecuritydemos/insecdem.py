@@ -94,7 +94,7 @@ class InsecurityDemosFrame(wx.Frame):
         else:
             label = self.START_LABEL
         self.status_button.SetLabel(label)
-        is_enabled = label == self.STOP_LABEL
+        is_enabled = (label == self.STOP_LABEL)
         self.demo_choice.Enable(not is_enabled)
         demo_name = self.demo_choice.GetStringSelection()
         self.current_demo_set.enable_control_panel(not is_enabled)
