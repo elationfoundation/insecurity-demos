@@ -19,6 +19,7 @@ class InsecurityDemosFrame(wx.Frame):
     STOP_LABEL = "Stop"
     DEMO_LABEL = "Demo"
     NOTES_LABEL = "Notes"
+    VIZ_LABEL = "Show"
 
     def __init__(self, parent, log):
         self.log = log # XXX : This should be used throughout
@@ -58,6 +59,11 @@ class InsecurityDemosFrame(wx.Frame):
         self.notes_button.Bind(wx.EVT_BUTTON, self._notes_pressed)
         self.notes_window = None
 
+        # Data Visualization.
+        self.viz_button = wx.Button(self, label=self.VIZ_LABEL)
+        self.viz_button.Bind(wx.EVT_BUTTON, self._viz_pressed)
+        self.viz_window = None
+
         # Layout.
         flags = wx.ALL | wx.ALIGN_CENTER_VERTICAL
         demo_box = wx.StaticBox(self, -1, self.DEMO_LABEL)
@@ -65,7 +71,8 @@ class InsecurityDemosFrame(wx.Frame):
         demo_sizer.Add(self.status_button, flag=flags, border=self.BORDER)
         demo_sizer.Add(self.demo_choice, flag=flags, border=self.BORDER)
         demo_sizer.Add(self.notes_button, flag=flags, border=self.BORDER)
-
+        demo_sizer.Add(self.viz_button, flag=flags, border=self.BORDER)
+        
         control_sizer = wx.BoxSizer(wx.HORIZONTAL)
         control_sizer.Add(demo_sizer, flag=flags, border=self.BORDER)
         control_sizer.Add(self.current_demo_set.control_panel)
@@ -104,6 +111,21 @@ class InsecurityDemosFrame(wx.Frame):
             self._update_notes()
         else:
             self.notes_window.Raise()
+
+    def _viz_pressed(self, event):
+        """Controls the creation/destruction of the visualizer html window."""
+        if not self.viz_window:
+            self.viz_window = wx.Frame(None, size=wx.Size(700,700))
+            self.html = wx.html.HtmlWindow(self.viz_window)
+            sizer = wx.BoxSizer(wx.VERTICAL)
+            sizer.Add(self.html, 1, wx.GROW)
+            self.viz_window.SetSizer(sizer)
+            self.viz_window.Show()
+            #TODO capture current, and start piping new data to viz window from stream
+            #self._update_viz()
+        else:
+            self.viz_window.Raise()
+
 
     def _update_notes(self, event=None):
         if self.notes_window:
